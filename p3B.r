@@ -26,23 +26,15 @@ nbytes <- function( drname, filelist, arg) {
 
 
 walk <- function( currdir, f, arg, firstcall=TRUE ){
-  backtoOrig <- getwd()
   currdir <- getDirRight(currdir)
   setwd(currdir)
-  for( d in dir() )
-    if(file.info(d)$isdir){
-      nextdir <- paste(getwd(),'/',d,sep='')
-      setwd(nextdir)
+  for( d in dir(currdir) )
+    if(file.info(paste(currdir,'/',d,sep=''))$isdir){
+      nextdir <- paste(currdir,'/',d,sep='')
       arg <- walk(nextdir, f, arg, firstcall=FALSE)
     }
 
-  arg <- f( currdir, dir(), arg )
-  
-  if(!firstcall)
-    setwd('..')
-  else
-    setwd(backtoOrig)
-  
+  arg <- f( currdir, dir(currdir), arg )
   return(arg)      
 }
 
